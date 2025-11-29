@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+    
+    <div class="card rounded-xl p-8 shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 flex items-center text-gray-800">
+            <svg class="w-6 h-6 mr-2 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+            Live Feed Input
+        </h2>
+        
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            <div class="relative group cursor-pointer h-40">
+                <input type="file" name="file" onchange="this.form.submit()" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                <div class="border-2 border-dashed border-gray-300 rounded-xl h-full flex flex-col items-center justify-center group-hover:border-teal-500 group-hover:bg-teal-50 transition">
+                    <div class="text-gray-500 group-hover:text-teal-600 text-center">
+                        <svg class="w-10 h-10 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        <span class="text-sm font-semibold">Click to Upload Vehicle Image</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="mt-6 h-64 bg-gray-100 rounded-lg overflow-hidden border border-gray-300 flex items-center justify-center relative">
+            {% if full_image %}
+                <img src="{{ url_for('static', filename='uploads/' + full_image) }}" class="max-h-full max-w-full object-contain">
+            {% else %}
+                <div class="text-gray-400 flex flex-col items-center">
+                    <span>Awaiting image input</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="space-y-6">
+        
+        <div class="card rounded-xl p-8 shadow-lg min-h-[200px]">
+            <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Analysis Result</h2>
+            
+            {% if status %}
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center justify-between">
+                        <div class="text-4xl font-mono font-bold text-gray-800 tracking-widest border-l-4 border-teal-500 pl-4">
+                            {{ text if text else "UNKNOWN" }}
+                        </div>
+                        
+                        {% if plate_image %}
+                            <img src="{{ url_for('static', filename='uploads/' + plate_image) }}" class="h-12 rounded border border-gray-300">
+                        {% endif %}
+                    </div>
+
+                    <div class="inline-flex items-center px-4 py-2 rounded-lg border text-sm font-bold w-full {{ css_class }}">
+                        <span class="w-2 h-2 rounded-full mr-3 bg-current animate-pulse"></span>
+                        {{ message }}
+                    </div>
+                </div>
+            {% else %}
+                <div class="flex items-center justify-center h-32 text-gray-400 italic">
+                    Scan a vehicle image to see results.
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="card rounded-xl p-6 relative">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xs font-bold text-gray-500 uppercase">Physical Gate State</h3>
+                <div id="statusLight" class="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)] transition-colors duration-300"></div>
+            </div>
+            
+            <div class="relative h-48 bg-gray-100 rounded-lg border border-gray-300 flex justify-center items-end overflow-hidden shadow-inner">
+                <div class="absolute bottom-4 left-8 w-6 h-24 bg-gray-400 rounded-t shadow-lg z-10"></div>
+                <div class="absolute bottom-4 right-8 w-6 h-24 bg-gray-400 rounded-t shadow-lg z-10"></div>
+                
+                <div id="miniGateBarrier" class="absolute bottom-20 left-10 h-3 barrier-stripe origin-left transition-transform duration-[2000ms] ease-in-out shadow-xl z-0" 
+                     style="width: calc(100% - 5rem); transform: rotate(0deg); border-bottom: 2px solid rgba(0,0,0,0.5);">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const gateTriggered = {{ 'true' if gate_triggered else 'false' }};
+        
+        if (gateTriggered) {
+            const barrier = document.getElementById('miniGateBarrier');
+            const light = document.getElementById('statusLight');
+            
+            // 1. OPEN GATE
+            setTimeout(() => {
+                barrier.style.transform = 'rotate(-90deg)';
+                light.className = "w-3 h-3 rounded-full bg-green-500 shadow-[0_0_15px_rgba(34,197,94,0.8)] transition-colors duration-300";
+            }, 500);
+
+            // 2. CLOSE GATE
+            setTimeout(() => {
+                barrier.style.transform = 'rotate(0deg)';
+                light.className = "w-3 h-3 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)] transition-colors duration-300";
+            }, 5500);
+        }
+    });
+</script>
+{% endblock %}

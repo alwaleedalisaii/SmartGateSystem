@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-3xl mx-auto mt-10">
+    <div class="card p-10 rounded-2xl border-2 border-gray-300 relative">
+        <h2 class="text-3xl font-bold mb-8 text-center text-gray-800">Manual Gate Override</h2>
+        
+        <div class="relative h-80 bg-gray-100 rounded-xl border border-gray-300 flex justify-center items-end overflow-hidden shadow-inner mb-8">
+            <div class="absolute bottom-6 left-16 w-10 h-40 bg-gray-400 rounded-t shadow-2xl z-10"></div>
+            <div class="absolute bottom-6 right-16 w-10 h-40 bg-gray-400 rounded-t shadow-2xl z-10"></div>
+            
+            <div id="mainGateBarrier" class="absolute bottom-36 left-20 h-5 barrier-stripe origin-left transition-transform duration-[2000ms] ease-in-out shadow-xl z-0" 
+                 style="width: calc(100% - 10rem); transform: rotate(0deg); border-bottom: 3px solid rgba(0,0,0,0.5);">
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button onclick="triggerManualOpen()" class="bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold py-4 px-12 rounded-xl shadow-lg transition transform hover:-translate-y-1 active:translate-y-0">
+                OPEN GATE
+            </button>
+            <p id="statusText" class="mt-4 text-gray-500 font-mono">System Ready</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateVisuals(isOpen) {
+        const barrier = document.getElementById('mainGateBarrier');
+        const status = document.getElementById('statusText');
+        
+        if (isOpen) {
+            barrier.style.transform = 'rotate(-90deg)';
+            status.innerText = "STATUS: OPEN - CAUTION";
+            status.className = "mt-4 font-mono font-bold text-green-600 animate-pulse";
+        } else {
+            barrier.style.transform = 'rotate(0deg)';
+            status.innerText = "STATUS: SECURE";
+            status.className = "mt-4 font-mono text-gray-500";
+        }
+    }
+
+    function triggerManualOpen() {
+        // Simple client-side feedback before API call
+        const status = document.getElementById('statusText');
+        status.innerText = "Opening...";
+        
+        fetch('/api/trigger_gate', { method: 'POST' })
+            .then(res => res.json());
+    }
+
+    // Poll backend status every second
+    setInterval(() => {
+        fetch('/api/gate_status')
+            .then(r => r.json())
+            .then(data => updateVisuals(data.is_open));
+    }, 1000);
+</script>
+{% endblock %}

@@ -1,0 +1,41 @@
+/* Import Modern Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f9fafb;
+    color: #374151;
+}
+
+/* --- CARD UTILITIES --- */
+.card {
+    background: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+}
+
+/* --- GATE VISUALS --- */
+.barrier-stripe {
+    background: repeating-linear-gradient(
+        45deg,
+        #2dd4bf,
+        #2dd4bf 10px,
+        #b91c1c 10px,
+        #b91c1c 20px
+    );
+}
+
+/* --- STATUS BADGES --- */
+.status-granted {
+    color: #065f46;
+    border-color: #34d399; 
+    background: #d1fae5;
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.2);
+}
+
+.status-denied {
+    color: #991b1b; 
+    border-color: #f87171; 
+    background: #fee2e2; 
+    box-shadow: 0 0 8px rgba(248, 113, 113, 0.2);
+}

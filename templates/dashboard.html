@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="space-y-8 max-w-7xl mx-auto">
+    
+    <div class="card rounded-xl p-6">
+        <h2 class="text-xl font-bold mb-4 text-gray-800">Employee Registration</h2>
+        <form method="POST" class="flex flex-wrap gap-4 items-end">
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-xs text-gray-500 mb-1">Full Name</label>
+                <input type="text" name="name" required class="w-full bg-white border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition text-gray-800">
+            </div>
+            <div class="flex-1 min-w-[150px]">
+                <label class="block text-xs text-gray-500 mb-1">Position</label>
+                <input type="text" name="position" required class="w-full bg-white border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none transition text-gray-800">
+            </div>
+            <div class="flex-1 min-w-[150px]">
+                <label class="block text-xs text-gray-500 mb-1">License Plate</label>
+                <input type="text" name="plate" required placeholder="ABC 1234" class="w-full bg-white border border-gray-300 rounded px-3 py-2 font-mono uppercase focus:ring-2 focus:ring-teal-500 focus:outline-none transition text-gray-800">
+            </div>
+            <button type="submit" name="add_employee" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded shadow-md transform hover:scale-105 transition">
+                Register
+            </button>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-2 card rounded-xl p-6 overflow-hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-gray-800">Recent Access Logs</h3>
+                <span class="text-xs text-gray-500">Last 20 entries</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-gray-700">
+                    <thead class="text-xs uppercase bg-gray-100 text-gray-500">
+                        <tr>
+                            <th class="px-4 py-3">Time</th>
+                            <th class="px-4 py-3">Identity</th>
+                            <th class="px-4 py-3">Plate</th>
+                            <th class="px-4 py-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for log in logs %}
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-4 py-3 whitespace-nowrap">{{ log.timestamp }}</td>
+                            <td class="px-4 py-3 font-medium text-gray-800">{{ log.name }}</td>
+                            <td class="px-4 py-3 font-mono text-teal-600">{{ log.plate_number }}</td>
+                            <td class="px-4 py-3">
+                                <span class="px-2 py-1 rounded text-[10px] font-bold {{ 'bg-green-100 text-green-700' if log.action == 'ENTRY' else 'bg-red-100 text-red-700' }}">
+                                    {{ log.action }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card rounded-xl p-6">
+            <h3 class="font-bold text-gray-800 mb-4">Registered Fleet</h3>
+            <div class="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                {% for emp in employees %}
+                <div class="bg-gray-50 p-3 rounded border border-gray-200 flex justify-between items-center group">
+                    <div>
+                        <div class="text-gray-800 font-medium">{{ emp.name }}</div>
+                        <div class="text-xs text-gray-500">{{ emp.position }}</div>
+                        <div class="text-xs font-mono text-teal-600 mt-1">{{ emp.plate_number }}</div>
+                    </div>
+                    <form method="POST" onsubmit="return confirm('Revoke access for {{ emp.name }}?');">
+                        <input type="hidden" name="delete_id" value="{{ emp.id }}">
+                        <button class="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition text-xs border border-red-300 bg-red-100 px-2 py-1 rounded">
+                            Revoke
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

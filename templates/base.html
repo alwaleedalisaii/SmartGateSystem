@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Gate System</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="min-h-screen flex flex-col bg-gray-50">
+    
+    {% if session.get('user') %}
+    <nav class="bg-white sticky top-0 z-50 shadow-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-teal-500 rounded flex items-center justify-center font-bold text-white shadow-lg">S</div>
+                    <span class="font-bold text-xl tracking-tight text-gray-800">Smart Gate<span class="text-teal-500"> System</span></span>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="{{ url_for('detection') }}" class="text-sm font-medium hover:text-teal-600 transition {{ 'text-teal-600 font-semibold' if request.endpoint == 'detection' else 'text-gray-600' }}">Operations</a>
+                    <a href="{{ url_for('dashboard') }}" class="text-sm font-medium hover:text-teal-600 transition {{ 'text-teal-600 font-semibold' if request.endpoint == 'dashboard' else 'text-gray-600' }}">Admin Logs</a>
+                    <a href="{{ url_for('gate_view') }}" class="text-sm font-medium hover:text-teal-600 transition {{ 'text-teal-600 font-semibold' if request.endpoint == 'gate_view' else 'text-gray-600' }}">Manual Gate</a>
+                    <a href="{{ url_for('logout') }}" class="text-sm font-medium text-red-500 hover:text-red-600">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <main class="flex-grow container mx-auto px-4 py-10">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
