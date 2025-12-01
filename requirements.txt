@@ -1,5 +1,5 @@
-flask
-opencv-python-headless
+Flask
 ultralytics
+opencv-python-headless
 requests
-numpy
+sqlite3-binary
