@@ -1,5 +1,4 @@
-Flask
-ultralytics
-opencv-python-headless
-requests
-sqlite3-binary
+Flask==3.1.2
+ultralytics==8.3.233
+opencv-python-headless==4.12.0.88
+requests==2.32.5
